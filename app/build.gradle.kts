@@ -4,7 +4,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("io.realm.kotlin")
-//    id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -78,8 +78,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Firebase
-    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
     // Room components
     val roomVersion = "2.6.1"

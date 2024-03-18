@@ -3,8 +3,8 @@ plugins {
     id("com.android.application") version "8.1.3" apply false
     id("com.android.library") version "8.1.1" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
-    id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
+    id("com.google.devtools.ksp") version "1.9.23-1.0.19" apply false
     id("io.realm.kotlin") version "1.11.0" apply false
     id("com.google.dagger.hilt.android") version "2.50" apply false
-//    id("com.google.gms.google-services") version "4.3.15" apply false
+    id("com.google.gms.google-services") version "4.3.15" apply false
 }
