@@ -1,4 +1,4 @@
-name: Lint Debug
+name: Test Debug
 
 on:
   workflow_call:
@@ -6,7 +6,7 @@ on:
 jobs:
 
   lint:
-    name: Linting Debug Variant
+    name: Testing Debug Variant
 
     runs-on: ubuntu-latest
 
@@ -26,4 +26,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Execute Gradle - lintDebug
-        run: ./gradlew lintDebug
+        run: ./gradlew testDebugUnitTest
