@@ -4,5 +4,6 @@
         <item name="windowSplashScreenBackground">#CCE8EA</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.Notey</item>
+        <item name="windowSplashScreenAnimationDuration">3000</item>
     </style>
 </resources>
