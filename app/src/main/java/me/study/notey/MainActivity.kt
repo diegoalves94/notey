@@ -13,16 +13,24 @@ import me.study.notey.ui.theme.NoteyTheme
 import me.study.notey.util.Constants.APP_ID
 
 class MainActivity : ComponentActivity() {
+
+    private var keepSplashOpen = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        installSplashScreen().setKeepOnScreenCondition {
+            keepSplashOpen
+        }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             NoteyTheme {
                 val navController = rememberNavController()
                 SetupNavGraph(
                     startDestination = getStartDestination(),
-                    navController = navController
+                    navController = navController,
+                    onDataLoaded = {
+                        keepSplashOpen = false
+                    }
                 )
             }
         }
