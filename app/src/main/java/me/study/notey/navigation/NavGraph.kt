@@ -1,14 +1,19 @@
 package me.study.notey.navigation
 
+import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -22,11 +27,14 @@ import io.realm.kotlin.mongodb.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.study.notey.models.Mood
 import me.study.notey.presentation.components.DisplayAlertDialog
 import me.study.notey.presentation.screens.auth.AuthenticationScreen
 import me.study.notey.presentation.screens.auth.AuthenticationViewModel
 import me.study.notey.presentation.screens.home.HomeScreen
 import me.study.notey.presentation.screens.home.HomeViewModel
+import me.study.notey.presentation.screens.write.WriteScreen
+import me.study.notey.presentation.screens.write.WriteViewModel
 import me.study.notey.util.Constants.APP_ID
 import me.study.notey.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import me.study.notey.util.RequestState
@@ -53,13 +61,20 @@ fun SetupNavGraph(
             navigateToWriteScreen = {
                 navController.navigate(Screen.Write.route)
             },
+            navigateToWriteScreenWithArgs = {
+                navController.navigate(Screen.Write.passNoteId(noteId = it))
+            },
             navigateToAuthScreen = {
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication.route)
             },
             onDataLoaded = onDataLoaded
         )
-        writeRoute()
+        writeRoute(
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
     }
 }
 
@@ -111,6 +126,7 @@ fun NavGraphBuilder.authenticationRoute(
 
 fun NavGraphBuilder.homeRoute(
     navigateToWriteScreen: () -> Unit,
+    navigateToWriteScreenWithArgs: (String) -> Unit,
     navigateToAuthScreen: () -> Unit,
     onDataLoaded: () -> Unit
 ) {
@@ -138,7 +154,8 @@ fun NavGraphBuilder.homeRoute(
             onSignOutClicked = {
                 signOutDialogOpened = true
             },
-            navigateToWriteScreen = navigateToWriteScreen
+            navigateToWriteScreen = navigateToWriteScreen,
+            navigateToWriteScreenWithArgs = navigateToWriteScreenWithArgs
         )
 
         DisplayAlertDialog(
@@ -161,7 +178,10 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-fun NavGraphBuilder.writeRoute() {
+@OptIn(ExperimentalFoundationApi::class)
+fun NavGraphBuilder.writeRoute(
+    onBackPressed: () -> Unit
+) {
     composable(
         route = Screen.Write.route,
         arguments = listOf(navArgument(name = WRITE_SCREEN_ARGUMENT_KEY) {
@@ -170,6 +190,46 @@ fun NavGraphBuilder.writeRoute() {
             defaultValue = null
         })
     ) {
+        val context = LocalContext.current
+        val viewModel: WriteViewModel = viewModel()
+        val uiState = viewModel.uiState
+        val pagerState = rememberPagerState(pageCount = { Mood.values().size })
+        val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
+        WriteScreen(
+            moodName = { Mood.values()[pageNumber].name },
+            uiState = uiState,
+            pagerState = pagerState,
+            onTitleChanged = { viewModel.setTitle(title = it) },
+            onDescriptionChanged = { viewModel.setDescription(description = it) },
+            onDeleteConfirmed = {
+                viewModel.deleteNote(
+                    onSuccess = {
+                        Toast.makeText(context, "Note deleted!", Toast.LENGTH_SHORT).show()
+                        onBackPressed()
+                    },
+                    onError = { errorMessage ->
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
+            onDateTimeUpdated = {
+                viewModel.updateDateTime(
+                    zonedDateTime = it
+                )
+            },
+            onBackPressed = onBackPressed,
+            onSaveClicked = {
+                viewModel.upsertNote(
+                    note = it.apply {
+                        mood = Mood.values()[pageNumber].name
+                    },
+                    onSuccess = onBackPressed,
+                    onError = { errorMessage ->
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+        )
     }
 }

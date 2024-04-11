@@ -50,7 +50,8 @@ fun HomeScreen(
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     onSignOutClicked: () -> Unit,
-    navigateToWriteScreen: () -> Unit
+    navigateToWriteScreen: () -> Unit,
+    navigateToWriteScreenWithArgs: (String) -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -87,7 +88,8 @@ fun HomeScreen(
                         HomeContent(
                             paddingValues = it,
                             notes = notes.data,
-                            onClick = {})
+                            onClick = navigateToWriteScreenWithArgs
+                        )
                     }
 
                     is RequestState.Error -> {
