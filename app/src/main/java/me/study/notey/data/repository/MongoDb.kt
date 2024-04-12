@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import me.study.notey.models.Note
+import me.study.notey.models.RequestState
 import me.study.notey.util.Constants.APP_ID
-import me.study.notey.util.RequestState
 import me.study.notey.util.toInstant
 import org.mongodb.kbson.ObjectId
 import java.time.ZoneId
@@ -152,7 +152,7 @@ object MongoDb : MongoRepository {
                     } catch (e: Exception) {
                         RequestState.Error(e)
                     }
-                }else{
+                } else {
                     RequestState.Error(Exception("Note does note exist."))
                 }
             }

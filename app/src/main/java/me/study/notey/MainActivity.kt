@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import io.realm.kotlin.mongodb.App
 import me.study.notey.navigation.Screen
 import me.study.notey.navigation.SetupNavGraph
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
             keepSplashOpen
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        FirebaseApp.initializeApp(this)
         setContent {
             NoteyTheme {
                 val navController = rememberNavController()

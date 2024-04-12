@@ -1,5 +1,6 @@
 package me.study.notey.presentation.screens.write
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -39,29 +40,34 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
+import me.study.notey.models.GalleryState
 import me.study.notey.models.Mood
 import me.study.notey.models.Note
 import me.study.notey.models.UiState
+import me.study.notey.presentation.components.GalleryUploader
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WriteContent(
     uiState: UiState,
     pagerState: PagerState,
+    galleryState: GalleryState,
     title: String,
     onTitleChanged: (String) -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
     paddingValues: PaddingValues,
-    onSaveClicked: (Note) -> Unit
+    onSaveClicked: (Note) -> Unit,
+    onImageSelect: (Uri) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(key1 = scrollState.maxValue){
+    LaunchedEffect(key1 = scrollState.maxValue) {
         scrollState.scrollTo(scrollState.maxValue)
     }
 
@@ -164,6 +170,13 @@ fun WriteContent(
             verticalArrangement = Arrangement.Bottom
         ) {
             Spacer(modifier = Modifier.height(12.dp))
+            GalleryUploader(
+                galleryState = galleryState,
+                onAddClicked = { focusManager.clearFocus() },
+                onImageSelect = onImageSelect,
+                onImageClicked = {}
+            )
+            Spacer(modifier = Modifier.height(12.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -171,9 +184,12 @@ fun WriteContent(
                 onClick = {
                     if (uiState.title.isNotEmpty() && uiState.description.isNotEmpty()) {
                         onSaveClicked(
-                            Note().apply{
+                            Note().apply {
                                 this.title = uiState.title
                                 this.description = uiState.description
+                                this.images = galleryState.images.map {
+                                    it.remoteImagePath
+                                }.toRealmList()
                             }
                         )
                     } else {
