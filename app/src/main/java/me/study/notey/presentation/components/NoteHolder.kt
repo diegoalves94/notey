@@ -1,6 +1,7 @@
 package me.study.notey.presentation.components
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -25,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ import io.realm.kotlin.ext.realmListOf
 import me.study.notey.models.Mood
 import me.study.notey.models.Note
 import me.study.notey.ui.theme.Elevation
+import me.study.notey.util.fetchImagesFromFirebase
 import me.study.notey.util.toInstant
 import java.time.Instant
 import java.time.ZoneId
@@ -64,31 +67,31 @@ fun NoteHolder(
     var galleryLoading by remember { mutableStateOf(false) }
     val downloadedImages = remember { mutableStateListOf<Uri>() }
 
-//    LaunchedEffect(key1 = galleryOpened) {
-//        if (galleryOpened && downloadedImages.isEmpty()) {
-//            galleryLoading = true
-//            fetchImagesFromFirebase(
-//                remoteImagePaths = note.images,
-//                onImageDownload = { image ->
-//                    downloadedImages.add(image)
-//                },
-//                onImageDownloadFailed = {
-//                    Toast.makeText(
-//                        context,
-//                        "Images not uploaded yet." +
-//                                "Wait a little bit, or try uploading again.",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    galleryLoading = false
-//                    galleryOpened = false
-//                },
-//                onReadyToDisplay = {
-//                    galleryLoading = false
-//                    galleryOpened = true
-//                }
-//            )
-//        }
-//    }
+    LaunchedEffect(key1 = galleryOpened) {
+        if (galleryOpened && downloadedImages.isEmpty()) {
+            galleryLoading = true
+            fetchImagesFromFirebase(
+                remoteImagePaths = note.images,
+                onImageDownload = { image ->
+                    downloadedImages.add(image)
+                },
+                onImageDownloadFailed = {
+                    Toast.makeText(
+                        context,
+                        "Images not uploaded yet." +
+                                "Wait a little bit, or try uploading again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    galleryLoading = false
+                    galleryOpened = false
+                },
+                onReadyToDisplay = {
+                    galleryLoading = false
+                    galleryOpened = true
+                }
+            )
+        }
+    }
 
     Row(modifier = Modifier
         .clickable(

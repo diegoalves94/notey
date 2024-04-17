@@ -42,6 +42,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
+import me.study.notey.models.GalleryImage
 import me.study.notey.models.GalleryState
 import me.study.notey.models.Mood
 import me.study.notey.models.Note
@@ -60,7 +61,8 @@ fun WriteContent(
     onDescriptionChanged: (String) -> Unit,
     paddingValues: PaddingValues,
     onSaveClicked: (Note) -> Unit,
-    onImageSelect: (Uri) -> Unit
+    onImageSelect: (Uri) -> Unit,
+    onImageClicked: (GalleryImage) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -174,7 +176,7 @@ fun WriteContent(
                 galleryState = galleryState,
                 onAddClicked = { focusManager.clearFocus() },
                 onImageSelect = onImageSelect,
-                onImageClicked = {}
+                onImageClicked = onImageClicked
             )
             Spacer(modifier = Modifier.height(12.dp))
             Button(
