@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import me.study.notey.R
 import me.study.notey.data.repository.Notes
 import me.study.notey.models.RequestState
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -49,7 +51,11 @@ fun HomeScreen(
     notes: Notes,
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
+    dateIsSelected: Boolean,
+    onDateSelected: (ZonedDateTime) -> Unit,
+    onDateReset: () -> Unit,
     onSignOutClicked: () -> Unit,
+    onDeleteAllClicked: () -> Unit,
     navigateToWriteScreen: () -> Unit,
     navigateToWriteScreenWithArgs: (String) -> Unit
 ) {
@@ -58,7 +64,8 @@ fun HomeScreen(
 
     NavigationDrawer(
         drawerState = drawerState,
-        onSignOutClicked = onSignOutClicked
+        onSignOutClicked = onSignOutClicked,
+        onDeleteAllClicked = onDeleteAllClicked
     ) {
         Scaffold(
             modifier = Modifier.nestedScroll(
@@ -67,7 +74,10 @@ fun HomeScreen(
             topBar = {
                 HomeTopBar(
                     scrollBehavior = scrollBehavior,
-                    onMenuClicked = onMenuClicked
+                    onMenuClicked = onMenuClicked,
+                    dateIsSelected = dateIsSelected,
+                    onDateSelected = onDateSelected,
+                    onDateReset = onDateReset
                 )
             },
             floatingActionButton = {
@@ -119,6 +129,7 @@ fun HomeScreen(
 fun NavigationDrawer(
     drawerState: DrawerState,
     onSignOutClicked: () -> Unit,
+    onDeleteAllClicked: () -> Unit,
     content: @Composable () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -156,6 +167,25 @@ fun NavigationDrawer(
                         },
                         selected = false,
                         onClick = onSignOutClicked
+                    )
+                    NavigationDrawerItem(
+                        label = {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 12.dp)
+                            ) {
+                                Image(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete all Icon"
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Delete All Notes",
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        },
+                        selected = false,
+                        onClick = onDeleteAllClicked
                     )
                 }
             )

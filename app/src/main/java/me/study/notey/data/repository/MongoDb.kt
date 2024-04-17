@@ -6,6 +6,7 @@ import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
+import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ import me.study.notey.util.Constants.APP_ID
 import me.study.notey.util.toInstant
 import org.mongodb.kbson.ObjectId
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object MongoDb : MongoRepository {
 
@@ -91,6 +93,34 @@ object MongoDb : MongoRepository {
         }
     }
 
+    override fun getFilteredNotes(zonedDateTime: ZonedDateTime): Flow<Notes> {
+        return if (user != null) {
+            try {
+                realm.query<Note>(query = "ownerId == $0 AND date < $1 AND date > $2",
+                    user.id,
+                    RealmInstant.from(zonedDateTime.plusDays(1).toInstant().epochSecond, 0),
+                    RealmInstant.from(zonedDateTime.minusDays(1).toInstant().epochSecond, 0)
+                ).asFlow().map {result ->
+                    RequestState.Success(
+                        data = result.list.groupBy {
+                            it.date.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                flow {
+                    emit(RequestState.Error(e))
+                }
+            }
+        } else {
+            flow {
+                emit(RequestState.Error(UserNotAuthenticatedException()))
+            }
+        }
+    }
+
     override suspend fun insertNote(note: Note): RequestState<Note> {
         return if (user != null) {
             realm.write {
@@ -154,6 +184,22 @@ object MongoDb : MongoRepository {
                     }
                 } else {
                     RequestState.Error(Exception("Note does note exist."))
+                }
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun deleteAllNotes(): RequestState<Boolean> {
+        return if (user != null) {
+            realm.write {
+                val notes = this.query<Note>("ownerId == $0", user.id).find()
+                try {
+                    delete(notes)
+                    RequestState.Success(data = true)
+                }catch (e: Exception){
+                    RequestState.Error(e)
                 }
             }
         } else {

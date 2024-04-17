@@ -137,10 +137,12 @@ fun NavGraphBuilder.homeRoute(
     onDataLoaded: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
-        val viewModel: HomeViewModel = viewModel()
+        val context = LocalContext.current
+        val viewModel: HomeViewModel = hiltViewModel()
         val notes by viewModel.notes
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember { mutableStateOf(false) }
+        var deleteAllDialogOpened by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = notes) {
@@ -157,8 +159,18 @@ fun NavGraphBuilder.homeRoute(
                     drawerState.open()
                 }
             },
+            dateIsSelected = viewModel.dateIsSelected,
+            onDateSelected = {
+                viewModel.getNotes(it)
+            },
+            onDateReset = {
+                viewModel.getNotes()
+            },
             onSignOutClicked = {
                 signOutDialogOpened = true
+            },
+            onDeleteAllClicked = {
+                deleteAllDialogOpened = true
             },
             navigateToWriteScreen = navigateToWriteScreen,
             navigateToWriteScreenWithArgs = navigateToWriteScreenWithArgs
@@ -180,6 +192,39 @@ fun NavGraphBuilder.homeRoute(
                 }
             },
             onDialogClosed = { signOutDialogOpened = false }
+        )
+
+        DisplayAlertDialog(
+            title = "Delete All Notes",
+            message = "Are you sure you want to permanently delete all your notes?",
+            dialogOpened = deleteAllDialogOpened,
+            onYesClicked = {
+                viewModel.deleteAllNotes(
+                    onSuccess = {
+                        Toast.makeText(
+                            context,
+                            "All Notes Deleted",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    onError = {
+                        Toast.makeText(
+                            context,
+                            if (it.message == "No Internet Connection")
+                                "We need an Internet connection for this operation"
+                            else it.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
+            },
+            onDialogClosed = { deleteAllDialogOpened = false }
         )
     }
 }

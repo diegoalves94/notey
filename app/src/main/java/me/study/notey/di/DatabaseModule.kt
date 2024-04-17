@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import me.study.notey.connectivity.NetworkConnectivityObserver
 import me.study.notey.data.db.database.ImagesDatabase
 import me.study.notey.util.Constants.IMAGES_DATABASE
 import javax.inject.Singleton
@@ -34,4 +35,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideImageToDeleteDao(database: ImagesDatabase) = database.imageToDeleteDao()
+
+    @Provides
+    @Singleton
+    fun provideNetworkConnectivityObserver(
+        @ApplicationContext context: Context
+    ) = NetworkConnectivityObserver(context = context)
 }
