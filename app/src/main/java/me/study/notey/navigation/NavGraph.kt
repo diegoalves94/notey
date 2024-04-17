@@ -1,5 +1,6 @@
 package me.study.notey.navigation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
@@ -14,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -28,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.study.notey.models.Mood
+import me.study.notey.models.RequestState
 import me.study.notey.presentation.components.DisplayAlertDialog
 import me.study.notey.presentation.screens.auth.AuthenticationScreen
 import me.study.notey.presentation.screens.auth.AuthenticationViewModel
@@ -37,7 +40,6 @@ import me.study.notey.presentation.screens.write.WriteScreen
 import me.study.notey.presentation.screens.write.WriteViewModel
 import me.study.notey.util.Constants.APP_ID
 import me.study.notey.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
-import me.study.notey.util.RequestState
 
 
 @Composable
@@ -102,7 +104,7 @@ fun NavGraphBuilder.authenticationRoute(
                 oneTapState.open()
                 viewModel.setLoading(true)
             },
-            onTokenReceived = { tokenId ->
+            onSuccessfulFirebaseSignIn = { tokenId ->
                 viewModel.signInWithMongoAtlas(
                     tokenId = tokenId,
                     onSuccess = {
@@ -114,6 +116,10 @@ fun NavGraphBuilder.authenticationRoute(
                         viewModel.setLoading(false)
                     }
                 )
+            },
+            onFailedFirebaseSignIn = { e ->
+                messageBarState.addError(e)
+                viewModel.setLoading(false)
             },
             onDialogDismissed = { message ->
                 messageBarState.addError(Exception(message))
@@ -191,15 +197,17 @@ fun NavGraphBuilder.writeRoute(
         })
     ) {
         val context = LocalContext.current
-        val viewModel: WriteViewModel = viewModel()
+        val viewModel: WriteViewModel = hiltViewModel()
         val uiState = viewModel.uiState
         val pagerState = rememberPagerState(pageCount = { Mood.values().size })
+        val galleryState = viewModel.galleryState
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
         WriteScreen(
             moodName = { Mood.values()[pageNumber].name },
             uiState = uiState,
             pagerState = pagerState,
+            galleryState = galleryState,
             onTitleChanged = { viewModel.setTitle(title = it) },
             onDescriptionChanged = { viewModel.setDescription(description = it) },
             onDeleteConfirmed = {
@@ -229,6 +237,17 @@ fun NavGraphBuilder.writeRoute(
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 )
+            },
+            onImageSelect = {
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
+                Log.d("WriteViewModel", "Uri: $it")
+                viewModel.addImage(
+                    image = it,
+                    imageType = type
+                )
+            },
+            onImageDeleteClicked = {
+                galleryState.removeImage(it)
             }
         )
     }

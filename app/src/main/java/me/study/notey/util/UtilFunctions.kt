@@ -2,8 +2,12 @@ package me.study.notey.util
 
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.storageMetadata
 import io.realm.kotlin.types.RealmInstant
+import me.study.notey.data.db.entities.ImageToDelete
+import me.study.notey.data.db.entities.ImageToUpload
 import java.time.Instant
 
 /**
@@ -34,26 +38,26 @@ fun fetchImagesFromFirebase(
     }
 }
 
-//fun retryUploadingImageToFirebase(
-//    imageToUpload: ImageToUpload,
-//    onSuccess: () -> Unit
-//) {
-//    val storage = FirebaseStorage.getInstance().reference
-//    storage.child(imageToUpload.remoteImagePath).putFile(
-//        imageToUpload.imageUri.toUri(),
-//        storageMetadata { },
-//        imageToUpload.sessionUri.toUri()
-//    ).addOnSuccessListener { onSuccess() }
-//}
+fun retryUploadingImageToFirebase(
+    imageToUpload: ImageToUpload,
+    onSuccess: () -> Unit
+) {
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToUpload.remoteImagePath).putFile(
+        imageToUpload.imageUri.toUri(),
+        storageMetadata { },
+        imageToUpload.sessionUri.toUri()
+    ).addOnSuccessListener { onSuccess() }
+}
 
-//fun retryDeletingImageFromFirebase(
-//    imageToDelete: ImageToDelete,
-//    onSuccess: () -> Unit
-//) {
-//    val storage = FirebaseStorage.getInstance().reference
-//    storage.child(imageToDelete.remoteImagePath).delete()
-//        .addOnSuccessListener { onSuccess() }
-//}
+fun retryDeletingImageFromFirebase(
+    imageToDelete: ImageToDelete,
+    onSuccess: () -> Unit
+) {
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToDelete.remoteImagePath).delete()
+        .addOnSuccessListener { onSuccess() }
+}
 
 fun RealmInstant.toInstant(): Instant {
     val sec: Long = this.epochSeconds

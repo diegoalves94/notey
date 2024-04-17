@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import me.study.notey.data.repository.MongoDb
 import me.study.notey.data.repository.Notes
-import me.study.notey.util.RequestState
+import me.study.notey.models.RequestState
 
 class HomeViewModel : ViewModel() {
 

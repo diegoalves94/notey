@@ -1,4 +1,4 @@
-package me.study.notey.util
+package me.study.notey.models
 
 sealed class RequestState<out T> {
     object Idle : RequestState<Nothing>()
