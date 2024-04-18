@@ -68,7 +68,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.tv:tv-material:1.0.0-alpha10")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -109,9 +108,6 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.3.0")
 
-    // Pager - Accompanist [DEPRECATED]
-//    implementation("com.google.accompanist:accompanist-pager:0.27.0")
-
     // Date-Time Picker
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
 
@@ -128,5 +124,5 @@ dependencies {
     implementation("com.github.stevdza-san:OneTapCompose:1.0.7")
 
     // Desugar JDK
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

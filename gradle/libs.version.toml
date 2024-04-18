@@ -1,0 +1,61 @@
+[versions]
+kotlin = "1.8.20"
+core-ktx = "1.12.0"
+lifecycle-runtime = "2.7.0"
+compose-activity = "1.8.2"
+compose-bom = "2024.03.00"
+compose-testing-bom = "2024.03.00"
+compose-runtime = "2.7.0"
+junit = "4.13.2"
+junit-ext = "1.1.5"
+espresso = "3.5.1"
+compose-navigation = "2.7.7"
+firebase-bom-v = "32.7.4"
+room = "2.6.1"
+splash = "1.0.1"
+kotlin-coroutines-core = "1.7.3"
+realm = "1.11.0"
+dagger-hilt = "2.50"
+hilt-navigation-compose = "1.2.0"
+coil = "2.3.0"
+date-time-picker = "1.0.2"
+message-bar-compose = "1.0.5"
+one-tap-compose = "1.0.7"
+desugar = "2.0.4"
+
+[libraries]
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+lifecycle-runtime = { module = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime" }
+activity-compose = { module = "androidx.activity", name = "activity-compose", version.ref = "compose-activity" }
+navigation-compose = { module = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
+lifecycle-runtime-compose = { module = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-runtime" }
+compose-bom = { module = "androidx.compose", name = "compose-bom", version.ref = "compose-bom-v" }
+compose-ui = { module = "androidx.compose.ui", name = "ui", version.ref = "compose-bom-v" }
+compose-ui-graphics = { module = "androidx.compose.ui", name = "ui-graphics", version.ref = "compose-bom-v" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose-bom-v" }
+compose-material3 = { module = "androidx.compose.material3", name = "material3", version.ref = "compose-bom-v" }
+compose-ui-tooling = { module = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose-testing-bom" }
+compose-ui-test-manifest = { module = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose-testing-bom" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose-testing-bom" }
+junit = { module = "junit", name = "junit", version.ref = "junit" }
+junit-ext = { module = "androidx.test.ext", name = "junit", version.ref = "junit-ext" }
+espresso-core = { module = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+firebase-bom = { module = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-v" }
+firebase-auth-ktx = { module = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth" }
+firebase-storage-ktx = { module = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage" }
+room-runtime = { module = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room", name = "room-ktx", version.ref = "room" }
+core-splashscreen = { module = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
+coroutines-core = { module = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines-core" }
+realm-sync = { module = "io.realm.kotlin", name = "library-sync", version.ref = "realm" }
+hilt-android = { module = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt" }
+hilt-compiler = { module = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger-hilt" }
+hilt-navigation-compose = { module = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+coil-compose = { module = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+date-time-picker = { module = "com.maxkeppeler.sheets-compose-dialogs", name = "core", version.ref = "date-time-picker" }
+date-dialog = { module = "com.maxkeppeler.sheets-compose-dialogs", name = "calendar", version.ref = "date-time-picker" }
+time-dialog = { module = "com.maxkeppeler.sheets-compose-dialogs", name = "clock", version.ref = "date-time-picker" }
+message-bar-compose = { module = "com.github.stevdza-san", name = "MessageBarCompose", version.ref = "message-bar-compose" }
+one-tap-compose = { module = "com.github.stevdza-san", name = "OneTapCompose", version.ref = "one-tap-compose" }
+desugar-jdk = { module = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
