@@ -10,8 +10,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.study.mongo.db.dao.ImageToDeleteDao
@@ -59,12 +61,13 @@ internal class HomeViewModel @Inject constructor(
         }
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeAllNotes() {
         allNotesJob = viewModelScope.launch {
             if (::filteredNotesJob.isInitialized) {
                 filteredNotesJob.cancelAndJoin()
             }
-            MongoDb.getAllNotes().collect { result ->
+            MongoDb.getAllNotes().debounce(2000).collect { result ->
                 notes.value = result
             }
         }
