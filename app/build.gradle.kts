@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "me.study.notey"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId = "me.study.notey"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -46,87 +46,84 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-//    hilt {
-//        enableAggregatingTask = true
-//    }
 }
 
 dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":core:util"))
+    implementation(project(":data:mongo"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:write"))
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2024.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.tv:tv-material:1.0.0-alpha10")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime)
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose.bom)
+
+    // Compose Navigation
+    implementation(libs.navigation.compose)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase.bom)
+
+    // Room components
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    // Runtime Compose
+    implementation(libs.lifecycle.runtime.compose)
+
+    // Splash API
+    implementation(libs.core.splashscreen)
+
+    // Mongo DB Realm
+    implementation(libs.coroutines.core)
+    implementation(libs.realm.sync)
+
+    // Dagger Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+    // Date-Time Picker
+    implementation(libs.date.time.picker)
+
+    // CALENDAR
+    implementation(libs.date.dialog)
+
+    // CLOCK
+    implementation(libs.time.dialog)
+
+    // Message Bar Compose
+    implementation(libs.message.bar.compose)
+
+    // One-Tap Compose
+    implementation(libs.one.tap.compose)
+
+    // Desugar JDK
+    coreLibraryDesugaring(libs.desugar.jdk)
+
+    //Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.espresso.core)
+
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // Compose Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-
-    // Room components
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-
-    // Runtime Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-
-    // Splash API
-    implementation("androidx.core:core-splashscreen:1.0.1")
-
-    // Mongo DB Realm
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("io.realm.kotlin:library-sync:1.11.0")
-
-    // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("com.google.dagger:hilt-compiler:2.50")
-
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.3.0")
-
-    // Pager - Accompanist [DEPRECATED]
-//    implementation("com.google.accompanist:accompanist-pager:0.27.0")
-
-    // Date-Time Picker
-    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
-
-    // CALENDAR
-    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
-
-    // CLOCK
-    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2")
-
-    // Message Bar Compose
-    implementation("com.github.stevdza-san:MessageBarCompose:1.0.5")
-
-    // One-Tap Compose
-    implementation("com.github.stevdza-san:OneTapCompose:1.0.7")
-
-    // Desugar JDK
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
 }

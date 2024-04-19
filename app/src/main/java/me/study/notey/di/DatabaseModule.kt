@@ -7,9 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import me.study.notey.connectivity.NetworkConnectivityObserver
-import me.study.notey.data.db.database.ImagesDatabase
-import me.study.notey.util.Constants.IMAGES_DATABASE
+import me.study.mongo.db.database.ImagesDatabase
+import me.study.util.Constants.IMAGES_DATABASE
+import me.study.util.connectivity.NetworkConnectivityObserver
 import javax.inject.Singleton
 
 @Module
